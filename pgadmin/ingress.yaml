@@ -1,0 +1,20 @@
+# Optional public URL for pgAdmin (deploy.sh --ingress). Same style as the FlowX dev env ingresses:
+# nginx class, HTTPS through the controller's default wildcard certificate, no extra auth.
+# Only the pgAdmin login protects it, and pgAdmin logs in to Postgres as the superuser.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pgadmin
+  labels: {app: pgadmin}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: __HOST__
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: {name: pgadmin, port: {name: http}}
